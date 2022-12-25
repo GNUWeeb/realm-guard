@@ -65,6 +65,10 @@ function add_user_warn(user_id: number, group_id: number, nr_warn: number)
                 /*
                  * First time get a warn.
                  */
+
+                if (nr_warn < 0)
+                        nr_warn = 0;
+
                 user_info = {warns_count: {[group_id]: 0}};
                 user_info.warns_count[group_id] = nr_warn;
                 fs.writeFileSync(user_file, JSON.stringify(user_info));
