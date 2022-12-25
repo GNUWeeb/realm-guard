@@ -1,12 +1,14 @@
 import { bot } from "./config";
 import { commands } from "./modules/mod";
 import { dropWelcomeAndFarewell } from "./modules/admin/mod";
+import { createDefaults } from "./defaults";
+
+createDefaults();
 
 commands.forEach((command) => {
   bot.command(command.command!, command.function);
 });
 
-// for group greetings
 bot.drop(dropWelcomeAndFarewell);
 
 bot.launch();
