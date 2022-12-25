@@ -46,6 +46,7 @@ function get_user_warns_count(user_id: number, group_id: number) {
   return 0;
 }
 
+
 function add_user_warn(user_id: number, group_id: number, nr_warn: number) {
   let users_dir = getStorageDir() + "/users";
   let user_file = users_dir + "/" + user_id + ".json";
@@ -63,6 +64,7 @@ function add_user_warn(user_id: number, group_id: number, nr_warn: number) {
     /*
      * First time get a warn.
      */
+    if (nr_warn < 0) nr_warn = 0;
     user_info = { warns_count: { [group_id]: 0 } };
     user_info.warns_count[group_id] = nr_warn;
     fs.writeFileSync(user_file, JSON.stringify(user_info));
