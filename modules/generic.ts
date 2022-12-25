@@ -1,3 +1,5 @@
+import { Command } from "../types/type";
+
 const startString = `<b>Realm Guard's here at your service!</b>
 
 <i>Please note that this bot is still in development, and may not work as expected.</i>
@@ -35,30 +37,30 @@ const versionString = `<b>Realm Guard</b> v0.0.1-alpha
 Node Version: ${process.version}
 Telegraf Version: 4.11.2`;
 
-export const startCommand = {
+export const startCommand: Command = {
   command: "start",
-  function: async (ctx: any) => {
+  function: async (ctx) => {
     await ctx.replyWithHTML(startString);
   },
 };
 
-export const pingCommand = {
+export const pingCommand: Command = {
   command: "ping",
-  function: async (ctx: any) => {
+  function: async (ctx) => {
     await ctx.replyWithHTML(`<b>Pong!</b> ${Date.now() - ctx.message.date * 1000}ms`);
   },
 };
 
-export const versionCommand = {
+export const versionCommand: Command = {
   command: "version",
-  function: async (ctx: any) => {
+  function: async (ctx) => {
     await ctx.replyWithHTML(versionString);
   },
 };
 
-export const helpCommand = {
+export const helpCommand: Command = {
   command: "help",
-  function: async (ctx: any) => {
+  function: async (ctx) => {
     await ctx.replyWithHTML(helpString);
   },
 }

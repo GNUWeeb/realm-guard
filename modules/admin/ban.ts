@@ -1,23 +1,32 @@
-// `/ban` command
-export const banCommand = {
-  command: "ban",
-  function: async (ctx: any) => {
-    const adminList = await ctx.getChatAdministrators();
+import { Command } from "../../types/type";
 
-    // Check if the user is trying to ban an admin
-    if (adminList.some((admin: any) => admin.user.id === ctx.message.reply_to_message?.from?.id)) {
-      await ctx.reply("I'm sorry, but you can't ban an admin/owner of this group.");
-      console.log("[ERROR] User is an admin!");
-      return;
-    } 
+// `/ban` command
+export const banCommand: Command = {
+  command: "ban",
+  function: async (ctx) => {
+    const adminList = await ctx.getChatAdministrators();
     
     // Check if the bot is an admin
-    else if (!adminList.some((admin: any) => admin.user.id === ctx.botInfo.id)) {
+    if (!adminList.some((admin) => admin.user.id === ctx.botInfo.id)) {
       await ctx.reply("I'm sorry, but I'm not an admin.");
       console.log("[ERROR] Bot is not an admin!");
       return;
     }
-    
+
+    // Check if user is an admin
+    else if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
+      await ctx.reply("I'm sorry, but you are not an admin.");
+      console.log("[ERROR] User is not an admin!");
+      return;
+    }
+
+    // Check if the user is trying to ban an admin
+    else if (adminList.some((admin) => admin.user.id === ctx.message.reply_to_message?.from?.id)) {
+      await ctx.reply("I'm sorry, but you can't ban an admin/owner of this group.");
+      console.log("[ERROR] User is an admin!");
+      return;
+    } 
+
     // Check if no valid reply or user ID
     else if (!ctx.message.reply_to_message && !ctx.message.text.split(" ")[1]) {
       await ctx.reply("Please reply to a message or type the user ID to ban a user!");
@@ -36,13 +45,6 @@ export const banCommand = {
     else if (isNaN(Number(ctx.message.text.split(" ")[1])) && !ctx.message.reply_to_message) {
       await ctx.reply(`I don't recognize that as a user ID, please reply to a message or type the user ID to ban a user! Also, ban reasons are not implemented yet.`);
       console.log("[ERROR] No valid reply or user ID!");
-      return;
-    }
-    
-    // Check if user is an admin
-    else if (!adminList.some((admin: any) => admin.user.id === ctx.from?.id)) {
-      await ctx.reply("I'm sorry, but you are not an admin.");
-      console.log("[ERROR] User is not an admin!");
       return;
     }
     
@@ -78,15 +80,22 @@ export const banCommand = {
 };
 
 // `/unban` command
-export const unbanCommand = {
+export const unbanCommand: Command = {
   command: "unban",
-  function: async (ctx: any) => {
+  function: async (ctx) => {
     const adminList = await ctx.getChatAdministrators();
 
     // Check if the bot is an admin
-    if (!adminList.some((admin: any) => admin.user.id === ctx.botInfo.id)) {
+    if (!adminList.some((admin) => admin.user.id === ctx.botInfo.id)) {
       await ctx.reply("I'm sorry, but I'm not an admin.");
       console.log("[ERROR] Bot is not an admin!");
+      return;
+    } 
+
+    // Check if user is an admin
+    else if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
+      await ctx.reply("I'm sorry, but you are not an admin.");
+      console.log("[ERROR] User is not an admin!");
       return;
     } 
     
@@ -111,16 +120,9 @@ export const unbanCommand = {
       return;
     } 
     
-    // Check if user is an admin
-    else if (!adminList.some((admin: any) => admin.user.id === ctx.from?.id)) {
-      await ctx.reply("I'm sorry, but you are not an admin.");
-      console.log("[ERROR] User is not an admin!");
-      return;
-    } 
-    
     // Unban user by reply
     else if (ctx.message.reply_to_message) {
-      await ctx.telegram.unbanChatMember(ctx.chat.id, ctx.message.reply_to_message.from?.id!);
+      await ctx.telegram.unbanChatMember(ctx.chat.id, ctx.message.reply_to_message.from?.id!, { only_if_banned: true });
       console.log(`[UNBAN] ${ctx.message.reply_to_message.from?.first_name} (${ctx.message.reply_to_message.from?.id})`);
       await ctx.reply(`User ${ctx.message.reply_to_message.from?.first_name} (${ctx.message.reply_to_message.from?.id}) unbanned!`);
       return;
@@ -135,7 +137,7 @@ export const unbanCommand = {
         console.log("[ERROR] User is not in the chat!");
         return;
       }
-      await ctx.telegram.unbanChatMember(ctx.chat.id, user.user.id);
+      await ctx.telegram.unbanChatMember(ctx.chat.id, user.user.id, { only_if_banned: true });
       await ctx.reply(`User ${user.user.first_name} (${user.user.id}) unbanned!`);
       return;
     } 
