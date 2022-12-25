@@ -1,4 +1,5 @@
 import { Command } from "../types/type";
+import * as fs from 'fs';
 
 const startString = `<b>Realm Guard's here at your service!</b>
 
@@ -24,7 +25,12 @@ const helpString = `<b>Realm Guard Help</b>
   /unwarn - Unwarn a user in the group
   /purge - Purge messages from the group
   /setwelcome - Set the welcome message for the group
+  /getwelcome - Get the welcome message for the group
+  /resetwelcome - Reset the welcome message for the group
   /setfarewell - Set the farewell message for the group
+  /getfarewell - Get the farewell message for the group
+  /resetfarewell - Reset the farewell message for the group
+  /resetgreets - Reset the welcome and farewell messages for the group
   /pin - Pin a message in the group
   /unpin - Unpin a message in the group
 
@@ -64,3 +70,27 @@ export const helpCommand: Command = {
     await ctx.replyWithHTML(helpString);
   },
 }
+
+export const replyToMsgId = async function (ctx: any, text: string, msg_id: number) {
+  await ctx.reply({
+    text: text,
+    reply_to_message_id: msg_id
+  });
+}
+
+export const getStorageDir = function () {
+  let ret = process.env?.STORAGE_DIR;
+
+  if (!ret)
+    ret = "dist/data/";
+
+  /*
+   * Make sure the storage dir exists.
+   * If not, create it.
+   */
+  if (!fs.existsSync(ret))
+    fs.mkdirSync(ret);
+
+  return ret;
+}
+  

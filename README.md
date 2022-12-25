@@ -12,13 +12,12 @@ Currently at a WIP stage and is not fit for production use.
 - [x] Kicking user
 - [x] Muting user
 - [x] Unmuting user
-- [ ] Warning user
-- [ ] Clearing user warns
-- [ ] Reducing user warns by 1
+- [x] Warning user
+- [x] Clearing user warns
 - [ ] Purging the group chat to replied message
-- [ ] Showing user warns
-- [ ] Setting welcome message
-- [ ] Setting farewell message
+- [x] Showing user warns
+- [x] Setting welcome message
+- [x] Setting farewell message
 - [ ] Reporting user
 
 > Features are subject to change and will probably change depending on the needs
