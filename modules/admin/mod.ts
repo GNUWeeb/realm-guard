@@ -10,7 +10,7 @@ import {
   resetWelcomeCommand,
   resetFarewellCommand,
   resetGreetsCommand,
-  dropWelcomeAndFarewell
+  dropWelcomeAndFarewell,
 } from "./greets";
 
 export const adminCommands = [
@@ -28,7 +28,7 @@ export const adminCommands = [
   resetGreetsCommand,
   warnCommand,
   unwarnCommand,
-  warnsCommand
+  warnsCommand,
 ];
 
 export { dropWelcomeAndFarewell };
