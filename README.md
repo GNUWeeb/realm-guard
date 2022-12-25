@@ -9,9 +9,9 @@ Currently at a WIP stage and is not fit for production use.
 - [x] Generic bot commands
 - [x] Banning user
 - [x] Unbanning user
-- [ ] Kicking user
-- [ ] Muting user
-- [ ] Unmuting user
+- [x] Kicking user
+- [x] Muting user
+- [x] Unmuting user
 - [ ] Warning user
 - [ ] Clearing user warns
 - [ ] Reducing user warns by 1
