@@ -17,8 +17,8 @@ Currently at a WIP stage and is not fit for production use.
 - [ ] Reducing user warns by 1
 - [ ] Purging the group chat to replied message
 - [ ] Showing user warns
-- [ ] Setting welcome message
-- [ ] Setting farewell message
+- [x] Setting welcome message
+- [x] Setting farewell message
 - [ ] Reporting user
 
 > Features are subject to change and will probably change depending on the needs

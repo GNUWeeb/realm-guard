@@ -25,7 +25,12 @@ const helpString = `<b>Realm Guard Help</b>
   /unwarn - Unwarn a user in the group
   /purge - Purge messages from the group
   /setwelcome - Set the welcome message for the group
+  /getwelcome - Get the welcome message for the group
+  /resetwelcome - Reset the welcome message for the group
   /setfarewell - Set the farewell message for the group
+  /getfarewell - Get the farewell message for the group
+  /resetfarewell - Reset the farewell message for the group
+  /resetgreets - Reset the welcome and farewell messages for the group
   /pin - Pin a message in the group
   /unpin - Unpin a message in the group
 
