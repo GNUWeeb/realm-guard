@@ -64,3 +64,10 @@ export const helpCommand: Command = {
     await ctx.replyWithHTML(helpString);
   },
 }
+
+export const replyToMsgId = async function (ctx: any, text: string, msg_id: number) {
+  await ctx.reply({
+    text: text,
+    reply_to_message_id: msg_id
+  });
+}
