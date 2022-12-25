@@ -12,12 +12,6 @@ export const kickCommand: Command = {
       return;
     }
   
-    if (adminList.some((admin) => admin.user.id === ctx.message.reply_to_message?.from?.id)) {
-      await ctx.reply("I'm sorry, but you can't kick an admin/owner of this group.");
-      console.log("[ERROR] User is an admin!");
-      return;
-    } 
-  
     // Check if no valid reply or user ID
     else if (!ctx.message.reply_to_message && !ctx.message.text.split(" ")[1]) {
       await ctx.reply("Please reply to a message or type the user ID to kick a user!");
@@ -31,6 +25,13 @@ export const kickCommand: Command = {
       console.log("[ERROR] User is not an admin!");
       return;
     }
+
+    // Check if user is trying to kick an admin
+    if (adminList.some((admin) => admin.user.id === ctx.message.reply_to_message?.from?.id)) {
+      await ctx.reply("I'm sorry, but you can't kick an admin/owner of this group.");
+      console.log("[ERROR] User is an admin!");
+      return;
+    } 
   
     // Kick user by reply
     else if (ctx.message.reply_to_message) {
