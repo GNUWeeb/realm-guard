@@ -1,5 +1,5 @@
 import { Command } from "../types/type";
-import * as fs from 'fs';
+import * as fs from "fs";
 
 const startString = `<b>Realm Guard's here at your service!</b>
 
@@ -37,7 +37,7 @@ const helpString = `<b>Realm Guard Help</b>
 <b>Realm Guard User Commands</b>
   /warns - Show your warns in the group
   /report - Report a user in the group
-  /donate - Donate to help support development`
+  /donate - Donate to help support development`;
 
 const versionString = `<b>Realm Guard</b> v0.0.1-alpha
 Node Version: ${process.version}
@@ -53,7 +53,9 @@ export const startCommand: Command = {
 export const pingCommand: Command = {
   command: "ping",
   function: async (ctx) => {
-    await ctx.replyWithHTML(`<b>Pong!</b> ${Date.now() - ctx.message.date * 1000}ms`);
+    await ctx.replyWithHTML(
+      `<b>Pong!</b> ${Date.now() - ctx.message.date * 1000}ms`
+    );
   },
 };
 
@@ -69,28 +71,29 @@ export const helpCommand: Command = {
   function: async (ctx) => {
     await ctx.replyWithHTML(helpString);
   },
-}
+};
 
-export const replyToMsgId = async function (ctx: any, text: string, msg_id: number) {
+export const replyToMsgId = async function (
+  ctx: any,
+  text: string,
+  msg_id: number
+) {
   await ctx.reply({
     text: text,
-    reply_to_message_id: msg_id
+    reply_to_message_id: msg_id,
   });
-}
+};
 
 export const getStorageDir = function () {
   let ret = process.env?.STORAGE_DIR;
 
-  if (!ret)
-    ret = "dist/data/";
+  if (!ret) ret = "dist/data/";
 
   /*
    * Make sure the storage dir exists.
    * If not, create it.
    */
-  if (!fs.existsSync(ret))
-    fs.mkdirSync(ret);
+  if (!fs.existsSync(ret)) fs.mkdirSync(ret);
 
   return ret;
-}
-  
+};
