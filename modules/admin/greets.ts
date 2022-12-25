@@ -1,5 +1,8 @@
 import { Command, Greets } from "../../types/type";
 import * as fs from "fs/promises";
+import * as fsSync from "fs";
+import { Context } from "telegraf";
+import { User } from "telegraf/typings/core/types/typegram";
 
 export const setWelcomeCommand: Command = {
   command: "setwelcome",
@@ -198,4 +201,30 @@ export const resetGreetsCommand: Command = {
       await ctx.reply("Welcome and farewell messages reset!");
     }
   }
+}
+
+export const dropWelcomeAndFarewell = (ctx: Context<any>) => {
+  if (ctx.message?.new_chat_members) {
+    ctx.message.new_chat_members.forEach(async (user: User) => {
+      if (user.is_bot) return false;
+      const greets: Greets = JSON.parse(await fs.readFile("./dist/data/greets.json", "utf-8"));
+      const greet = greets[ctx.chat.id] || greets.default;
+      await ctx.reply(greet.welcome
+        .replace("{{user_name}}", user.first_name)
+        .replace("{{user_id}}", user.id.toString())
+        .replace("{{group_name}}", ctx.chat.title || ctx.chat.first_name)
+        .replace("{{group_id}}", ctx.chat.id.toString()));
+    });
+  } else if (ctx.message?.left_chat_member) {
+    const user = ctx.message.left_chat_member;
+    if (user.is_bot) return false;
+    const greets: Greets = JSON.parse(fsSync.readFileSync("./dist/data/greets.json", "utf-8"));
+    const greet = greets[ctx.chat.id] || greets.default;
+    ctx.reply(greet.farewell
+      .replace("{{user_name}}", user.first_name)
+      .replace("{{user_id}}", user.id.toString())
+      .replace("{{group_name}}", ctx.chat.title || ctx.chat.first_name)
+      .replace("{{group_id}}", ctx.chat.id.toString()));
+  }
+  return true;
 }
