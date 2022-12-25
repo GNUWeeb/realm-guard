@@ -9,6 +9,7 @@ import {
   resetWelcomeCommand,
   resetFarewellCommand,
   resetGreetsCommand,
+  dropWelcomeAndFarewell
 } from "./greets";
 
 export const adminCommands = [
@@ -25,3 +26,5 @@ export const adminCommands = [
   resetFarewellCommand,
   resetGreetsCommand,
 ];
+
+export { dropWelcomeAndFarewell };
