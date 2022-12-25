@@ -12,7 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "lockfile": "^1.0.4",
     "telegraf": "^4.11.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "storage/*"
+    ]
   },
   "devDependencies": {
     "@types/node": "^18.11.17",
