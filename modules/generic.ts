@@ -82,7 +82,7 @@ export const getStorageDir = function () {
   let ret = process.env?.STORAGE_DIR;
 
   if (!ret)
-    ret = "storage/";
+    ret = "dist/data/";
 
   /*
    * Make sure the storage dir exists.
