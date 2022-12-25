@@ -1,4 +1,5 @@
 import { Command } from "../types/type";
+import * as fs from 'fs';
 
 const startString = `<b>Realm Guard's here at your service!</b>
 
@@ -71,3 +72,20 @@ export const replyToMsgId = async function (ctx: any, text: string, msg_id: numb
     reply_to_message_id: msg_id
   });
 }
+
+export const getStorageDir = function () {
+  let ret = process.env?.STORAGE_DIR;
+
+  if (!ret)
+    ret = "storage/";
+
+  /*
+   * Make sure the storage dir exists.
+   * If not, create it.
+   */
+  if (!fs.existsSync(ret))
+    fs.mkdirSync(ret);
+
+  return ret;
+}
+  
