@@ -1,5 +1,27 @@
 import { banCommand, unbanCommand } from "./ban";
 import { muteCommand, unmuteCommand } from "./mute";
 import { kickCommand } from "./kick";
+import {
+  setWelcomeCommand,
+  getWelcomeCommand,
+  setFarewellCommand,
+  getFarewellCommand,
+  resetWelcomeCommand,
+  resetFarewellCommand,
+  resetGreetsCommand,
+} from "./greets";
 
-export const adminCommands = [banCommand, unbanCommand, kickCommand, muteCommand, unmuteCommand];
+export const adminCommands = [
+  banCommand,
+  unbanCommand,
+  kickCommand,
+  muteCommand,
+  unmuteCommand,
+  setWelcomeCommand,
+  getWelcomeCommand,
+  setFarewellCommand,
+  getFarewellCommand,
+  resetWelcomeCommand,
+  resetFarewellCommand,
+  resetGreetsCommand,
+];
