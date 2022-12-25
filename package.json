@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon dist/index.js\"",
+    "dev": "concurrently --kill-others \"tsc -w\" \"nodemon --ignore dist/data/ dist/index.js\"",
     "serve": "tsc && node dist/index.js",
     "build": "tsc"
   },
