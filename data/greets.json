@@ -1,0 +1,6 @@
+{
+  "default": {
+    "welcome": "Welcome to {{group_name}}, {{user_name}}!",
+    "farewell": "Goodbye, {{user_name}}!"
+  }
+}
