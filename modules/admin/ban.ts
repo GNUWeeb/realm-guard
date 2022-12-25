@@ -5,21 +5,28 @@ export const banCommand: Command = {
   command: "ban",
   function: async (ctx) => {
     const adminList = await ctx.getChatAdministrators();
-
-    // Check if the user is trying to ban an admin
-    if (adminList.some((admin) => admin.user.id === ctx.message.reply_to_message?.from?.id)) {
-      await ctx.reply("I'm sorry, but you can't ban an admin/owner of this group.");
-      console.log("[ERROR] User is an admin!");
-      return;
-    } 
     
     // Check if the bot is an admin
-    else if (!adminList.some((admin) => admin.user.id === ctx.botInfo.id)) {
+    if (!adminList.some((admin) => admin.user.id === ctx.botInfo.id)) {
       await ctx.reply("I'm sorry, but I'm not an admin.");
       console.log("[ERROR] Bot is not an admin!");
       return;
     }
-    
+
+    // Check if user is an admin
+    else if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
+      await ctx.reply("I'm sorry, but you are not an admin.");
+      console.log("[ERROR] User is not an admin!");
+      return;
+    }
+
+    // Check if the user is trying to ban an admin
+    else if (adminList.some((admin) => admin.user.id === ctx.message.reply_to_message?.from?.id)) {
+      await ctx.reply("I'm sorry, but you can't ban an admin/owner of this group.");
+      console.log("[ERROR] User is an admin!");
+      return;
+    } 
+
     // Check if no valid reply or user ID
     else if (!ctx.message.reply_to_message && !ctx.message.text.split(" ")[1]) {
       await ctx.reply("Please reply to a message or type the user ID to ban a user!");
@@ -38,13 +45,6 @@ export const banCommand: Command = {
     else if (isNaN(Number(ctx.message.text.split(" ")[1])) && !ctx.message.reply_to_message) {
       await ctx.reply(`I don't recognize that as a user ID, please reply to a message or type the user ID to ban a user! Also, ban reasons are not implemented yet.`);
       console.log("[ERROR] No valid reply or user ID!");
-      return;
-    }
-    
-    // Check if user is an admin
-    else if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
-      await ctx.reply("I'm sorry, but you are not an admin.");
-      console.log("[ERROR] User is not an admin!");
       return;
     }
     
@@ -91,6 +91,13 @@ export const unbanCommand: Command = {
       console.log("[ERROR] Bot is not an admin!");
       return;
     } 
+
+    // Check if user is an admin
+    else if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
+      await ctx.reply("I'm sorry, but you are not an admin.");
+      console.log("[ERROR] User is not an admin!");
+      return;
+    } 
     
     // Check if no valid reply or user ID
     else if (!ctx.message.reply_to_message && !ctx.message.text.split(" ")[1]) {
@@ -110,13 +117,6 @@ export const unbanCommand: Command = {
     else if (isNaN(Number(ctx.message.text.split(" ")[1])) && !ctx.message.reply_to_message) {
       await ctx.reply("I don't recognize that as a user ID, please reply to a message or type the user ID to unban a user! Also, unban reasons are dumb, I mean just unban them.");
       console.log("[ERROR] No valid reply or user ID!");
-      return;
-    } 
-    
-    // Check if user is an admin
-    else if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
-      await ctx.reply("I'm sorry, but you are not an admin.");
-      console.log("[ERROR] User is not an admin!");
       return;
     } 
     
