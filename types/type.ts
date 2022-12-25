@@ -9,3 +9,12 @@ export type Command = {
     update_id: number;
   }>>,
 }
+
+export type Greets = {
+  [key: string]: GreetItem,
+}
+
+export type GreetItem = {
+  welcome: string,
+  farewell: string,
+}
