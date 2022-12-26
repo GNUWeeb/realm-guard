@@ -105,15 +105,6 @@ async function validate_request(ctx: any, bitmask: number) {
     return false;
   }
 
-  if (bitmask & U_MUST_REPLY && !message?.reply_to_message) {
-    await replyToMsgId(
-      ctx,
-      "You need to reply to a message to use this command.",
-      msg_id
-    );
-    return false;
-  }
-
   const admin_list = await ctx.getChatAdministrators();
 
   if (
@@ -121,6 +112,15 @@ async function validate_request(ctx: any, bitmask: number) {
     !admin_list.some((admin: any) => admin.user.id === ctx.from?.id)
   ) {
     await replyToMsgId(ctx, "You are not an admin!", msg_id);
+    return false;
+  }
+
+  if (bitmask & U_MUST_REPLY && !message?.reply_to_message) {
+    await replyToMsgId(
+      ctx,
+      "You need to reply to a message to use this command.",
+      msg_id
+    );
     return false;
   }
 
