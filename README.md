@@ -14,7 +14,7 @@ Currently at a WIP stage and is not fit for production use.
 - [x] Unmuting user
 - [x] Warning user
 - [x] Clearing user warns
-- [ ] Purging the group chat to replied message
+- [x] Purging the group chat to replied message
 - [x] Showing user warns
 - [x] Setting welcome message
 - [x] Setting farewell message

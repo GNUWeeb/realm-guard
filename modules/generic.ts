@@ -1,4 +1,4 @@
-import { Command } from "../types/type";
+import { Command, ContextDefault, UserInfo } from "../types/type";
 import * as fs from "fs";
 
 const startString = `<b>Realm Guard's here at your service!</b>
@@ -44,57 +44,131 @@ const versionString = `<b>Realm Guard</b> v0.0.1-alpha
 Node Version: ${process.version}
 Telegraf Version: 4.11.2`;
 
+const userString = `<b>User Info</b>
+<b>First Name:</b> {{first_name}} {{last_name}}
+<b>Username:</b> {{username}}
+<b>ID:</b> {{id}}
+<b>Is Bot:</b> {{is_bot}}
+<b>Is Admin:</b> {{is_admin}}`;
+
 export const startCommand: Command = {
-  command: "start",
-  function: async (ctx) => {
-    await ctx.replyWithHTML(startString);
-  },
+    command: "start",
+    function: async (ctx) => {
+        await ctx.replyWithHTML(startString);
+    },
 };
 
 export const pingCommand: Command = {
-  command: "ping",
-  function: async (ctx) => {
-    await ctx.replyWithHTML(
-      `<b>Pong!</b> ${Date.now() - ctx.message.date * 1000}ms`
-    );
-  },
+    command: "ping",
+    function: async (ctx) => {
+        await ctx.replyWithHTML(
+            `<b>Pong!</b> ${Date.now() - ctx.message.date * 1000}ms`
+        );
+    },
 };
 
 export const versionCommand: Command = {
-  command: "version",
-  function: async (ctx) => {
-    await ctx.replyWithHTML(versionString);
-  },
+    command: "version",
+    function: async (ctx) => {
+        await ctx.replyWithHTML(versionString);
+    },
 };
 
 export const helpCommand: Command = {
-  command: "help",
-  function: async (ctx) => {
-    await ctx.replyWithHTML(helpString);
-  },
+    command: "help",
+    function: async (ctx) => {
+        await ctx.replyWithHTML(helpString);
+    },
 };
 
+export const printUserInfoCommand: Command = {
+    command: "user",
+    function: async (ctx) => {
+        if (ctx.message.reply_to_message) {
+            const user = await ctx.telegram.getChatMember(
+                ctx.chat.id,
+                ctx.message.from.id
+            );
+            await printChatString(ctx, {
+                firstName: ctx.message.reply_to_message.from?.first_name!,
+                lastName: ctx.message.reply_to_message.from?.last_name!,
+                username: ctx.message.reply_to_message.from?.username!,
+                id: String(ctx.message.reply_to_message.from?.id!),
+                isBot: ctx.message.reply_to_message.from?.is_bot!,
+                isAdmin: user.status,
+            });
+        } else if (ctx.message.from) {
+            const user = await ctx.telegram.getChatMember(
+                ctx.chat.id,
+                ctx.message.from.id
+            );
+            await printChatString(ctx, {
+                firstName: ctx.message.from.first_name!,
+                lastName: ctx.message.from.last_name!,
+                username: ctx.message.from.username!,
+                id: String(ctx.message.from.id!),
+                isBot: ctx.message.from.is_bot!,
+                isAdmin: user.status,
+            });
+        } else if (!isNaN(Number(ctx.message.text?.split(" ")[1]))) {
+            const user = await ctx.telegram.getChatMember(
+                ctx.chat.id,
+                Number(ctx.message.text?.split(" ")[1])
+            );
+
+            await printChatString(ctx, {
+                firstName: user.user?.first_name!,
+                lastName: user.user?.last_name!,
+                username: user.user?.username!,
+                id: String(user.user?.id!),
+                isBot: user.user?.is_bot!,
+                isAdmin: user.status,
+            });
+        }
+    },
+};
+
+async function printChatString(ctx: ContextDefault, vars: UserInfo) {
+    await ctx.replyWithHTML(
+        userString
+            .replace("{{first_name}}", vars.firstName)
+            .replace(
+                "{{last_name}}",
+                vars.lastName ? `\n<b>Last Name:</b> ${vars.lastName}` : ""
+            )
+            .replace("{{username}}", vars.username)
+            .replace("{{id}}", String(vars.id))
+            .replace("{{is_bot}}", vars.isBot ? "Yes" : "No")
+            .replace(
+                "{{is_admin}}",
+                vars.isAdmin === "administrator" || vars.isAdmin === "creator"
+                    ? "Yes"
+                    : "No"
+            )
+    );
+}
+
 export const replyToMsgId = async function (
-  ctx: any,
-  text: string,
-  msg_id: number
+    ctx: any,
+    text: string,
+    msg_id: number
 ) {
-  await ctx.reply({
-    text: text,
-    reply_to_message_id: msg_id,
-  });
+    await ctx.reply({
+        text: text,
+        reply_to_message_id: msg_id,
+    });
 };
 
 export const getStorageDir = function () {
-  let ret = process.env?.STORAGE_DIR;
+    let ret = process.env?.STORAGE_DIR;
 
-  if (!ret) ret = "dist/data/";
+    if (!ret) ret = "dist/data/";
 
-  /*
-   * Make sure the storage dir exists.
-   * If not, create it.
-   */
-  if (!fs.existsSync(ret)) fs.mkdirSync(ret);
+    /*
+     * Make sure the storage dir exists.
+     * If not, create it.
+     */
+    if (!fs.existsSync(ret)) fs.mkdirSync(ret);
 
-  return ret;
+    return ret;
 };
