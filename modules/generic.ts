@@ -20,6 +20,7 @@ const helpString = `<b>Realm Guard Help</b>
   /unban - Unban a user from the group
   /kick - Kick a user from the group
   /mute - Mute a user in the group
+  /tmute - Temporarily mute a user in the group (e.g. 1h, 30m, 10s, 1y)
   /unmute - Unmute a user in the group
   /warn - Warn a user in the group
   /unwarn - Unwarn a user in the group
