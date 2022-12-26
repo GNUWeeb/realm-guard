@@ -12,6 +12,7 @@ import {
   resetGreetsCommand,
   dropWelcomeAndFarewell,
 } from "./greets";
+import { purgeCommand } from "./purge";
 
 export const adminCommands = [
   banCommand,
@@ -30,6 +31,7 @@ export const adminCommands = [
   warnCommand,
   unwarnCommand,
   warnsCommand,
+  purgeCommand,
 ];
 
 export { dropWelcomeAndFarewell };
