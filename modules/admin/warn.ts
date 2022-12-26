@@ -88,56 +88,56 @@ function add_user_warn(user_id: number, group_id: number, nr_warn: number) {
 }
 
 async function validate_request(ctx: any, bitmask: number) {
-  const update = ctx.update;
-  const msg_id = update.message.message_id;
-  const message = update.message;
+    const update = ctx.update;
+    const msg_id = update.message.message_id;
+    const message = update.message;
 
-  if (
-    bitmask & U_MUST_BE_IN_SUPERGROUP &&
-    message?.chat?.type !== "supergroup"
-  ) {
-    await replyToMsgId(
-      ctx,
-      "This command can only be executed in a supergroup!",
-      msg_id
-    );
-    return false;
-  }
+    if (
+        bitmask & U_MUST_BE_IN_SUPERGROUP &&
+        message?.chat?.type !== "supergroup"
+    ) {
+        await replyToMsgId(
+            ctx,
+            "This command can only be executed in a supergroup!",
+            msg_id
+        );
+        return false;
+    }
 
-  const admin_list = await ctx.getChatAdministrators();
+    const admin_list = await ctx.getChatAdministrators();
 
-  if (
-    bitmask & U_MUST_BE_AN_ADMIN &&
-    !admin_list.some((admin: any) => admin.user.id === ctx.from?.id)
-  ) {
-    await replyToMsgId(ctx, "You are not an admin!", msg_id);
-    return false;
-  }
+    if (
+        bitmask & U_MUST_BE_AN_ADMIN &&
+        !admin_list.some((admin: any) => admin.user.id === ctx.from?.id)
+    ) {
+        await replyToMsgId(ctx, "You are not an admin!", msg_id);
+        return false;
+    }
 
-  if (bitmask & U_MUST_REPLY && !message?.reply_to_message) {
-    await replyToMsgId(
-      ctx,
-      "You need to reply to a message to use this command.",
-      msg_id
-    );
-    return false;
-  }
+    if (bitmask & U_MUST_REPLY && !message?.reply_to_message) {
+        await replyToMsgId(
+            ctx,
+            "You need to reply to a message to use this command.",
+            msg_id
+        );
+        return false;
+    }
 
-  if (
-    bitmask & U_CANT_REPLY_TO_ADMIN &&
-    admin_list.some(
-      (admin: any) => admin.user.id === message.reply_to_message?.from?.id
-    )
-  ) {
-    await replyToMsgId(
-      ctx,
-      "You can't warn an admin/owner of this group.",
-      msg_id
-    );
-    return false;
-  }
+    if (
+        bitmask & U_CANT_REPLY_TO_ADMIN &&
+        admin_list.some(
+            (admin: any) => admin.user.id === message.reply_to_message?.from?.id
+        )
+    ) {
+        await replyToMsgId(
+            ctx,
+            "You can't warn an admin/owner of this group.",
+            msg_id
+        );
+        return false;
+    }
 
-  return true;
+    return true;
 }
 
 function construct_name(from: any) {
