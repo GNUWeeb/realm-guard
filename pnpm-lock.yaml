@@ -4,11 +4,13 @@ specifiers:
     "@types/node": ^18.11.17
     concurrently: ^7.6.0
     dotenv: ^16.0.3
+    lockfile: ^1.0.4
     nodemon: ^2.0.20
     telegraf: ^4.11.2
     typescript: ^4.9.4
 
 dependencies:
+    lockfile: 1.0.4
     telegraf: 4.11.2
 
 devDependencies:
@@ -390,6 +392,15 @@ packages:
         engines: { node: ">=0.12.0" }
         dev: true
 
+    /lockfile/1.0.4:
+        resolution:
+            {
+                integrity: sha512-cvbTwETRfsFh4nHsL1eGWapU1XFi5Ot9E85sWAwia7Y7EgB7vfqcZhTKZ+l7hCGxSPoushMv5GKhT5PdLv03WA==,
+            }
+        dependencies:
+            signal-exit: 3.0.7
+        dev: false
+
     /lodash/4.17.21:
         resolution:
             {
@@ -562,6 +573,13 @@ packages:
                 integrity: sha512-8o/QEhSSRb1a5i7TFR0iM4G16Z0vYB2OQVs4G3aAFXjn3T6yEx8AZxy1PgDF7I00LZHYA3WxaSYIf5e5sAX8Rw==,
             }
         dev: true
+
+    /signal-exit/3.0.7:
+        resolution:
+            {
+                integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==,
+            }
+        dev: false
 
     /simple-update-notifier/1.1.0:
         resolution:
