@@ -1,10 +1,15 @@
-import { Command, GreetItem } from "../../types/type";
+import { Command, GreetItem, ValidateOptions } from "../../types/type";
 import * as fs from "fs/promises";
 import * as fsSync from "fs";
 import { Context } from "telegraf";
 import { User } from "telegraf/typings/core/types/typegram";
 import { getStorageDir } from "../generic";
 import { validateRequest } from "../validation";
+
+const rules = [
+        "user_is_admin",
+        "query",
+] satisfies ValidateOptions[];
 
 export const setWelcomeCommand: Command = {
     command: "setwelcome",
@@ -21,7 +26,7 @@ export const setWelcomeCommand: Command = {
             );
         }
 
-        if ((await validateRequest(ctx, ["admin", "noreply_admin"])) === false)
+        if ((await validateRequest(ctx, rules)) === false)
             return;
 
         // Set welcome message
@@ -110,7 +115,7 @@ export const setFarewellCommand: Command = {
             );
         }
 
-        if ((await validateRequest(ctx, ["admin", "noreply_admin"])) === false)
+        if ((await validateRequest(ctx, rules)) === false)
             return;
         // Set farewell message
         else if (ctx.message.text) {
@@ -204,7 +209,7 @@ export const resetWelcomeCommand: Command = {
             );
         }
 
-        if ((await validateRequest(ctx, ["admin", "noreply_admin"])) === false)
+        if ((await validateRequest(ctx, rules)) === false)
             return;
         // Reset welcome message
         else {
@@ -253,7 +258,7 @@ export const resetFarewellCommand: Command = {
             );
         }
 
-        if ((await validateRequest(ctx, ["admin", "noreply_admin"])) === false)
+        if ((await validateRequest(ctx, rules)) === false)
             return;
         // Reset farewell message
         else {
@@ -292,8 +297,6 @@ export const resetFarewellCommand: Command = {
 export const resetGreetsCommand: Command = {
     command: "resetgreets",
     function: async (ctx) => {
-        const adminList = await ctx.getChatAdministrators();
-
         if (
             !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
         ) {
@@ -306,12 +309,8 @@ export const resetGreetsCommand: Command = {
             );
         }
 
-        // Check if user is an admin
-        if (!adminList.some((admin) => admin.user.id === ctx.from?.id)) {
-            await ctx.reply("I'm sorry, but you are not an admin.");
-            console.log("[ERROR] User is not an admin!");
+        if ((await validateRequest(ctx, rules)) === false)
             return;
-        }
 
         // Reset welcome and farewell messages
         else {

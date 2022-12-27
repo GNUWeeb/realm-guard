@@ -1,4 +1,4 @@
-import { Command } from "../../types/type";
+import { Command, ValidateOptions } from "../../types/type";
 import { validateRequest } from "../validation";
 import { construct_name } from "../generic";
 
@@ -29,7 +29,7 @@ async function report_cmd(ctx: any)
                 "in_supergroup",
                 "noreply_admin",
                 "reply",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;

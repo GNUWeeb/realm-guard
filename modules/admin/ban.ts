@@ -1,4 +1,4 @@
-import { Command } from "../../types/type";
+import { Command, ValidateOptions } from "../../types/type";
 import { validateRequest } from "../validation";
 import { extract_kick_query } from "./kick";
 import { timeToSecond } from "../generic";
@@ -120,7 +120,7 @@ async function __ban_cmd(ctx: any, revoke_msg: boolean = false,
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
@@ -151,7 +151,7 @@ async function unban_cmd(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
@@ -188,7 +188,7 @@ async function tban_cmd(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
