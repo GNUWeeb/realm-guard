@@ -20,8 +20,8 @@ Currently at a WIP stage and is not fit for production use.
   - [x] Setting and resetting welcome message
   - [x] Setting and resetting farewell message
 - [x] Banning user
-  - [ ] Banning user temporarily
-  - [ ] Banning user silently
+  - [x] Banning user temporarily
+  - [x] Banning user silently
   - [ ] Banning user globally
 - [x] Unbanning user
   - [ ] Unbanning user globally
@@ -41,7 +41,7 @@ Currently at a WIP stage and is not fit for production use.
 - [ ] Managing group rules
   - [ ] Setting group rules
   - [ ] Showing group rules
-- [ ] Reporting user
+- [x] Reporting user
 - [ ] Pinning message
 - [ ] Unpinning message
 - [ ] Spam management

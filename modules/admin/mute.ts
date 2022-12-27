@@ -1,4 +1,5 @@
 import { Command } from "../../types/type";
+import { timeToSecond } from "../generic";
 import { validateRequest } from "../validation";
 
 export const muteCommand: Command = {
@@ -119,25 +120,6 @@ export const unmuteCommand: Command = {
     },
 };
 
-function timeToSecond(time: string) {
-    if (time.endsWith("s")) {
-        return Number(time.slice(0, -1));
-    } else if (time.endsWith("m")) {
-        return Number(time.slice(0, -1)) * 60;
-    } else if (time.endsWith("h")) {
-        return Number(time.slice(0, -1)) * 60 * 60;
-    } else if (time.endsWith("d")) {
-        return Number(time.slice(0, -1)) * 60 * 60 * 24;
-    } else if (time.endsWith("w")) {
-        return Number(time.slice(0, -1)) * 60 * 60 * 24 * 7;
-    } else if (time.endsWith("mo")) {
-        return Number(time.slice(0, -2)) * 60 * 60 * 24 * 30;
-    } else if (time.endsWith("y")) {
-        return Number(time.slice(0, -1)) * 60 * 60 * 24 * 365;
-    } else {
-        return 0;
-    }
-}
 
 export const timedMuteCommand: Command = {
     command: "tmute",
