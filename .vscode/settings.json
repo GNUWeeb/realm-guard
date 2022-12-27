@@ -1,7 +1,7 @@
 {
     "typescript.tsdk": "./node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
-    "editor.tabSize": 4,
+    "editor.tabSize": 8,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "editor.rulers": [80]

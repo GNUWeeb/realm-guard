@@ -1,49 +1,91 @@
 import { Command } from "../../types/type";
 import { validateRequest } from "../validation";
 
-export const kickCommand: Command = {
-    command: "kick",
-    function: async (ctx) => {
-        if ((await validateRequest(ctx, ["reply", "query", "admin"])) === false)
-            return;
-        // Kick user by reply
-        else if (ctx.message.reply_to_message) {
-            await ctx.telegram.unbanChatMember(
-                ctx.chat.id,
-                ctx.message.reply_to_message.from?.id!
-            );
-            console.log(
-                `[KICK] ${ctx.message.reply_to_message.from?.first_name} (${ctx.message.reply_to_message.from?.id})`
-            );
-            await ctx.reply(
-                `User ${ctx.message.reply_to_message.from?.first_name} (${ctx.message.reply_to_message.from?.id}) kicked!`
-            );
+/*
+ * Export this for ban.ts.
+ */
+export async function extract_kick_query(ctx: any, text: string)
+{
+        const args = text.split(" ");
+        let user;
+
+        /*
+         * Currently, supported pattern is only:
+         * /cmd 123456789
+         *
+         * TODO(Viro_SSFS): Implement ban reason here.
+         *
+         * TODO(Viro_SSFS): Ban by username is possible with storage.
+         *                  This bot must have a memory!
+         */
+        if (args.length != 2)
+                return false;
+
+        if (!args[1].match(/^\d+$/))
+                return false;
+
+        try {
+                user = await ctx.getChatMember(Number(args[1]));
+                if (!("user" in user))
+                        return false;
+
+        } catch (e) {
+                return false;
         }
 
-        // Kick user by ID
-        else if (ctx.message.text) {
-            const args = ctx.message.text.split(" ");
-            const user = await ctx.telegram.getChatMember(
-                ctx.chat.id,
-                Number(args[1])
-            );
-            if ((await validateRequest(ctx, ["supergroup"])) === false) {
+        return user.user;
+}
+
+async function do_kick(ctx: any, user: any)
+{
+        await ctx.unbanChatMember(user.id);
+        console.log(`[KICK] ${user.first_name} (${user.id})`);
+        await ctx.reply(`User ${user.first_name} (${user.id}) kicked!`);
+}
+
+async function kick_with_reply(ctx: any)
+{
+        await do_kick(ctx, ctx.message.reply_to_message.from);
+}
+
+async function kick_with_query(ctx: any)
+{
+        const user = extract_kick_query(ctx, ctx.message.text);
+
+        if (!user)
+                return false;
+
+        await do_kick(ctx, user);
+        return true;
+}
+
+async function kick_cmd(ctx: any)
+{
+        const rules = [
+                "in_supergroup",
+                "user_is_admin",
+                "bot_is_admin",
+                "noreply_admin",
+        ];
+
+        if (!(await validateRequest(ctx, rules)))
                 return;
-            }
-            await ctx.telegram.unbanChatMember(ctx.chat.id, user.user.id);
-            console.log(`[KICK] ${user.user.first_name} (${user.user.id})`);
-            await ctx.reply(
-                `User ${user.user.first_name} (${user.user.id}) kicked!`
-            );
+
+        if (ctx.message?.text) {
+                if (await kick_with_query(ctx))
+                        return;
         }
 
-        // Other cases
-        else {
-            console.log("[ERROR] No valid reply or user ID!");
-            await ctx.reply(
-                "Please reply to a message or type the user ID to kick a user!"
-            );
-            return;
+        if (ctx.message?.reply_to_message?.from) {
+                await kick_with_reply(ctx);
+                return;
         }
-    },
+
+        console.log("[ERROR] No valid reply or user ID!");
+        await ctx.reply("Please reply to a message or type the user ID to kick a user!");
+}
+
+export const kickCommand: Command = {
+        command: "kick",
+        function: kick_cmd
 };

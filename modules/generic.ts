@@ -61,136 +61,149 @@ export const startCommand: Command = {
 };
 
 export const pingCommand: Command = {
-    command: "ping",
-    function: async (ctx) => {
-        await ctx.replyWithHTML(
-            `<b>Pong!</b> ${Date.now() - ctx.message.date * 1000}ms`
-        );
-    },
+        command: "ping",
+        function: async (ctx) => {
+                /*
+                 * TODO(Viro_SSFS):
+                 * This is not accurate, @ctx.message.date precision
+                 * is second, not ms. We have to calculate a round
+                 * trip send + edit message to get more accurate
+                 * result.
+                 */
+                const ms = Date.now() - ctx.message.date * 1000;
+                await ctx.replyWithHTML(`<b>Pong!</b> ${ms}ms`);
+        }
 };
 
 export const versionCommand: Command = {
-    command: "version",
-    function: async (ctx) => {
-        await ctx.replyWithHTML(versionString);
-    },
+        command: "version",
+        function: async (ctx) => {
+                await ctx.replyWithHTML(versionString);
+        }
 };
 
 export const helpCommand: Command = {
-    command: "help",
-    function: async (ctx) => {
-        await ctx.replyWithHTML(helpString);
-    },
+        command: "help",
+        function: async (ctx) => {
+                await ctx.replyWithHTML(helpString);
+        }
 };
 
-export const printUserInfoCommand: Command = {
-    command: "user",
-    function: async (ctx) => {
-        if (ctx.message.reply_to_message) {
-            const user = await ctx.telegram.getChatMember(
-                ctx.chat.id,
-                ctx.message.from.id
-            );
-            await printChatString(ctx, {
-                firstName: ctx.message.reply_to_message.from?.first_name!,
-                lastName: ctx.message.reply_to_message.from?.last_name!,
-                username: ctx.message.reply_to_message.from?.username!,
-                id: String(ctx.message.reply_to_message.from?.id!),
-                isBot: ctx.message.reply_to_message.from?.is_bot!,
-                isAdmin: user.status,
-            });
-        } else if (ctx.message.from) {
-            const user = await ctx.telegram.getChatMember(
-                ctx.chat.id,
-                ctx.message.from.id
-            );
-            await printChatString(ctx, {
-                firstName: ctx.message.from.first_name!,
-                lastName: ctx.message.from.last_name!,
-                username: ctx.message.from.username!,
-                id: String(ctx.message.from.id!),
-                isBot: ctx.message.from.is_bot!,
-                isAdmin: user.status,
-            });
-        } else if (!isNaN(Number(ctx.message.text?.split(" ")[1]))) {
-            const user = await ctx.telegram.getChatMember(
-                ctx.chat.id,
-                Number(ctx.message.text?.split(" ")[1])
-            );
+async function printChatString(ctx: ContextDefault, vars: UserInfo)
+{
+        if (vars.lastName)
+                vars.lastName = `\n<b>Last Name:</b> ${vars.lastName}`;
 
-            await printChatString(ctx, {
+        if (vars.isAdmin === "administrator" || vars.isAdmin === "creator") {
+                vars.isAdmin = "Yes";
+        } else {
+                vars.isAdmin = "No";
+        }
+
+        const text = userString
+                .replace("{{first_name}}", vars.firstName)
+                .replace("{{last_name}}", vars.lastName)
+                .replace("{{username}}", vars.username)
+                .replace("{{id}}", String(vars.id))
+                .replace("{{is_bot}}", vars.isBot ? "Yes" : "No")
+                .replace("{{is_admin}}", vars.isAdmin);
+
+        await ctx.replyWithHTML(text);
+}
+
+async function print_user_info_func(ctx: any)
+{
+        let user_id;
+
+        if (ctx.message.reply_to_message) {
+                user_id = ctx.message.reply_to_message.from.id;
+        } else if (ctx.message.from) {
+                user_id = ctx.message.from.id;       
+        } else if (!isNaN(Number(ctx.message.text?.split(" ")[1]))) {
+                user_id = Number(ctx.message.text?.split(" ")[1]);
+        } else {
+                /* WTF is this! */
+                return;
+        }
+
+        const user = await ctx.getChatMember(user_id);
+        await printChatString(ctx, {
                 firstName: user.user?.first_name!,
                 lastName: user.user?.last_name!,
                 username: user.user?.username!,
                 id: String(user.user?.id!),
                 isBot: user.user?.is_bot!,
                 isAdmin: user.status,
-            });
-        }
-    },
-};
-
-async function printChatString(ctx: ContextDefault, vars: UserInfo) {
-    await ctx.replyWithHTML(
-        userString
-            .replace("{{first_name}}", vars.firstName)
-            .replace(
-                "{{last_name}}",
-                vars.lastName ? `\n<b>Last Name:</b> ${vars.lastName}` : ""
-            )
-            .replace("{{username}}", vars.username)
-            .replace("{{id}}", String(vars.id))
-            .replace("{{is_bot}}", vars.isBot ? "Yes" : "No")
-            .replace(
-                "{{is_admin}}",
-                vars.isAdmin === "administrator" || vars.isAdmin === "creator"
-                    ? "Yes"
-                    : "No"
-            )
-    );
+        });
 }
 
-export function timeToSecond(time: string) {
-    if (time.endsWith("s")) {
-        return Number(time.slice(0, -1));
-    } else if (time.endsWith("m")) {
-        return Number(time.slice(0, -1)) * 60;
-    } else if (time.endsWith("h")) {
-        return Number(time.slice(0, -1)) * 60 * 60;
-    } else if (time.endsWith("d")) {
-        return Number(time.slice(0, -1)) * 60 * 60 * 24;
-    } else if (time.endsWith("w")) {
-        return Number(time.slice(0, -1)) * 60 * 60 * 24 * 7;
-    } else if (time.endsWith("mo")) {
-        return Number(time.slice(0, -2)) * 60 * 60 * 24 * 30;
-    } else if (time.endsWith("y")) {
-        return Number(time.slice(0, -1)) * 60 * 60 * 24 * 365;
-    } else {
-        return 0;
-    }
+export const printUserInfoCommand: Command = {
+        command: "user",
+        function: print_user_info_func,
+};
+
+/*
+ * TODO(irvanmalik48):
+ * This timeToSecond() function is flawed. For example,
+ * if you have "zxc1234aaah", the result is still valid.
+ * We should return invalid in that case.
+ */
+export function timeToSecond(time: string)
+{
+        if (time.endsWith("s"))
+                return Number(time.slice(0, -1));
+
+        if (time.endsWith("m"))
+                return Number(time.slice(0, -1)) * 60;
+
+        if (time.endsWith("h"))
+                return Number(time.slice(0, -1)) * 60 * 60;
+
+        if (time.endsWith("d"))
+                return Number(time.slice(0, -1)) * 60 * 60 * 24;
+
+        if (time.endsWith("w"))
+                return Number(time.slice(0, -1)) * 60 * 60 * 24 * 7;
+
+        if (time.endsWith("mo"))
+                return Number(time.slice(0, -2)) * 60 * 60 * 24 * 30;
+
+        if (time.endsWith("y"))
+                return Number(time.slice(0, -1)) * 60 * 60 * 24 * 365;
+
+        return Number(time);
 }
 
-export const replyToMsgId = async function (
-    ctx: any,
-    text: string,
-    msg_id: number
-) {
-    await ctx.reply({
-        text: text,
-        reply_to_message_id: msg_id,
-    });
-};
+export async function replyToMsgId(ctx: any, text: string, msg_id: number)
+{
+        await ctx.reply({text: text, reply_to_message_id: msg_id});
+}
 
-export const getStorageDir = function () {
-    let ret = process.env?.STORAGE_DIR;
+export function getStorageDir()
+{
+        let ret = process.env?.STORAGE_DIR;
 
-    if (!ret) ret = "dist/data/";
+        if (!ret)
+                ret = "dist/data/";
 
-    /*
-     * Make sure the storage dir exists.
-     * If not, create it.
-     */
-    if (!fs.existsSync(ret)) fs.mkdirSync(ret);
+        /*
+         * Make sure the storage dir exists.
+         * If not, create it.
+         */
+        if (!fs.existsSync(ret))
+                fs.mkdirSync(ret);
 
-    return ret;
-};
+        return ret;
+}
+
+export function construct_name(from: any) {
+        let name = `${from?.first_name}`;
+
+        if ("last_name" in from)
+                name += ` ${from.last_name}`;
+
+        if ("username" in from)
+                name += ` (@${from.username})`;
+
+        return name;
+}

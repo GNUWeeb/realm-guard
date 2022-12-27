@@ -6,7 +6,7 @@ import { createDefaults } from "./defaults";
 createDefaults();
 
 commands.forEach((command) => {
-    bot.command(command.command!, command.function);
+        bot.command(command.command!, command.function);
 });
 
 bot.drop(dropWelcomeAndFarewell);
