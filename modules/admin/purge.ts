@@ -24,7 +24,11 @@ export const purgeCommand: Command = {
                 iterator++;
             }
 
-            await Promise.all(ids.map((id) => ctx.deleteMessage(id)));
+            await Promise.all(ids.map((id) => {
+                ctx.deleteMessage(id).catch(
+                    () => console.log(`[ERROR] Could not delete message ${id}!`)
+                );
+            }));
 
             await ctx.reply("Purge complete!");
             console.log(
