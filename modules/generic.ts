@@ -16,11 +16,13 @@ const helpString = `<b>Realm Guard Help</b>
   /version - Show Realm Guard's version
 
 <b>Realm Guard Admin Commands</b>
-  /ban - Ban a user from the group
+  /ban <id|reply> - Ban a user from the group
+  /sban <id|reply> - Ban a user from the group silently
+  /tban <id|reply> <time> - Temporarily ban a user from the group
   /unban - Unban a user from the group
   /kick - Kick a user from the group
-  /mute - Mute a user in the group
-  /tmute - Temporarily mute a user in the group (e.g. 1h, 30m, 10s, 1y)
+  /mute <id|reply> - Mute a user in the group
+  /tmute <id|reply> <time> - Temporarily mute a user in the group
   /unmute - Unmute a user in the group
   /warn - Warn a user in the group
   /unwarn - Unwarn a user in the group
@@ -146,6 +148,26 @@ async function printChatString(ctx: ContextDefault, vars: UserInfo) {
                     : "No"
             )
     );
+}
+
+export function timeToSecond(time: string) {
+    if (time.endsWith("s")) {
+        return Number(time.slice(0, -1));
+    } else if (time.endsWith("m")) {
+        return Number(time.slice(0, -1)) * 60;
+    } else if (time.endsWith("h")) {
+        return Number(time.slice(0, -1)) * 60 * 60;
+    } else if (time.endsWith("d")) {
+        return Number(time.slice(0, -1)) * 60 * 60 * 24;
+    } else if (time.endsWith("w")) {
+        return Number(time.slice(0, -1)) * 60 * 60 * 24 * 7;
+    } else if (time.endsWith("mo")) {
+        return Number(time.slice(0, -2)) * 60 * 60 * 24 * 30;
+    } else if (time.endsWith("y")) {
+        return Number(time.slice(0, -1)) * 60 * 60 * 24 * 365;
+    } else {
+        return 0;
+    }
 }
 
 export const replyToMsgId = async function (
