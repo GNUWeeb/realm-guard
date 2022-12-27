@@ -42,8 +42,8 @@ Currently at a WIP stage and is not fit for production use.
   - [ ] Setting group rules
   - [ ] Showing group rules
 - [x] Reporting user
-- [ ] Pinning message
-- [ ] Unpinning message
+- [x] Pinning message
+- [x] Unpinning message
 - [ ] Spam management
   - [ ] Flood control
   - [ ] CAPTCHA challenge for new users
