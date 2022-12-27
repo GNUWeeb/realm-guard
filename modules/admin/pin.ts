@@ -1,11 +1,10 @@
-import { replyToMsgId, getStorageDir } from "../generic";
 import { validateRequest } from "../validation";
 
 async function pin_command(ctx: any)
 {
         const rules = [
-                "user_in_supergroup",
-                "admin",
+                "in_supergroup",
+                "user_is_admin",
                 "bot_is_admin",
                 "reply",
         ];
@@ -20,8 +19,8 @@ async function pin_command(ctx: any)
 async function unpin_command(ctx: any)
 {
         const rules = [
-                "user_in_supergroup",
-                "admin",
+                "in_supergroup",
+                "user_is_admin",
                 "bot_is_admin",
                 "reply",
         ];

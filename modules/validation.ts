@@ -16,7 +16,7 @@ async function resolve_t_user_status(ctx: any, state: any)
                 return;
 
         const t_user_id = reply_to?.from?.id;
-        const x = (await ctx.getChatMember(t_user_id as number));
+        const x = await ctx.getChatMember(t_user_id as number);
         state.reply_u_chat_info = x;
 }
 

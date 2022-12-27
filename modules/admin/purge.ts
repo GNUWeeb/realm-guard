@@ -23,7 +23,12 @@ async function purge_cmd(ctx: any)
                 iterator++;
         }
 
-        await Promise.all(ids.map((id) => ctx.deleteMessage(id)));
+        await Promise.all(ids.map((id) => {
+                const f = function () {
+                        console.log(`[ERROR] Could not delete message ${id}!`);
+                };
+                ctx.deleteMessage(id).catch(f);
+        }));
         await ctx.reply("Purge complete!");
         console.log(`[PURGE] ${ctx.message.reply_to_message.from?.first_name} (${ctx.message.reply_to_message.from?.id})`);
 }

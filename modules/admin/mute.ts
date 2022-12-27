@@ -1,4 +1,5 @@
 import { Command } from "../../types/type";
+import { timeToSecond } from "../generic";
 import { validateRequest } from "../validation";
 import { extract_kick_query } from "./kick";
 
@@ -31,7 +32,14 @@ async function do_mute(ctx: any, user: any, seconds: number = -1)
 {
         await do_restrict(ctx, user, seconds, false);
         console.log(`[MUTE] ${user.first_name} (${user.id})`);
-        await ctx.reply(`User ${user.first_name} (${user.id}) has been muted!`);
+
+        let r;
+        if ("time_mute_arg" in ctx)
+                r = `User ${user.first_name} (${user.id}) is temporarily muted for ${ctx.time_mute_arg}!`
+        else
+                r = `User ${user.first_name} (${user.id}) has been muted!`;
+
+        await ctx.reply(r);
 }
 
 async function do_unmute(ctx: any, user: any, seconds: number = -1)
@@ -73,64 +81,18 @@ async function unmute_with_query(ctx: any)
         return true;
 }
 
-/*
- * TODO(irvanmalik48):
- * This timeToSecond() function is flawed. For example,
- * if you have "zxc1234aaah", the result is still valid.
- * We should return invalid in that case.
- */
-function timeToSecond(time: string)
+async function tmute_with_reply(ctx: any, args: string[])
 {
-        if (time.endsWith("s"))
-                return Number(time.slice(0, -1));
-
-        if (time.endsWith("m"))
-                return Number(time.slice(0, -1)) * 60;
-
-        if (time.endsWith("h"))
-                return Number(time.slice(0, -1)) * 60 * 60;
-
-        if (time.endsWith("d"))
-                return Number(time.slice(0, -1)) * 60 * 60 * 24;
-
-        if (time.endsWith("w"))
-                return Number(time.slice(0, -1)) * 60 * 60 * 24 * 7;
-
-        if (time.endsWith("mo"))
-                return Number(time.slice(0, -2)) * 60 * 60 * 24 * 30;
-
-        if (time.endsWith("y"))
-                return Number(time.slice(0, -1)) * 60 * 60 * 24 * 365;
-
-        return Number(time);
-}
-
-async function tmute_query_with_reply(ctx: any)
-{
-        const args = ctx.message.text.split(" ");
-
-        if (args.length != 2) {
-                ctx.reply("Invalid tmute query!");
-                return;
-        }
-
         const time = timeToSecond(args[1]);
         await do_mute(ctx, ctx.message?.reply_to_message?.from, time);
 }
 
-async function tmute_query_with_user_id(ctx: any)
+async function tmute_with_user_id(ctx: any, args: string[])
 {
-        const args = ctx.message.text.split(" ");
-
-        if (args.length != 3) {
-                ctx.reply("Invalid tmute query!");
-                return;
-        }
-
-        const user = extract_kick_query(ctx, `/tmute {args[1]}`);
+        const user = await extract_kick_query(ctx, `/tmute {args[1]}`);
 
         if (!user) {
-                ctx.reply(`Cannot resolve user_id ${args[1]}`);
+                await ctx.reply(`Cannot resolve user_id ${args[1]}`);
                 return;
         }
 
@@ -190,6 +152,15 @@ async function unmute_cmd(ctx: any)
         await ctx.reply("Please reply to a message or type the user ID to unmute a user!");
 }
 
+async function send_invalid_tmute_notice(ctx: any)
+{
+        await ctx.replyWithHTML(
+                `Invalid tmute query!\n\n` +
+                `Usage:\n` +
+                `<code>/tmute &lt;time&gt;</code>\n` +
+                `<code>/tmute &lt;user_id&gt; &lt;time&gt;</code>`);
+}
+
 async function tmute_cmd(ctx: any)
 {
         const rules = [
@@ -202,12 +173,39 @@ async function tmute_cmd(ctx: any)
         if (!(await validateRequest(ctx, rules)))
                 return;
 
-        if (ctx.message?.reply_to_message?.from) {
-                await tmute_query_with_reply(ctx);
-                return;
-        }
+        /*
+         * Expected values:
+         *
+         *   args[0] = /tmute
+         *   args[1] = user_id
+         *   args[2] = time
+         *
+         * or
+         *
+         *   args[0] = /tmute
+         *   args[1] = time
+         *
+         */
+        const args = ctx.message.text.split(" ");
+        switch (args.length) {
+        case 2:
+                /*
+                 * `/tmute time` needs a replied message.
+                 */
+                if (!(await validateRequest(ctx, ["reply"])))
+                        return;
 
-        await tmute_query_with_user_id(ctx);
+                ctx.time_mute_arg = args[1];
+                await tmute_with_reply(ctx, args);
+                break;
+        case 3:
+                ctx.time_mute_arg = args[2];
+                await tmute_with_user_id(ctx, args);
+                break;
+        default:
+                await send_invalid_tmute_notice(ctx);
+                break;
+        }
 }
 
 export const muteCommand: Command = {

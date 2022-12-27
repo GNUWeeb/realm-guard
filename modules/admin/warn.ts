@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { replyToMsgId, getStorageDir } from "../generic";
+import { replyToMsgId, getStorageDir, construct_name } from "../generic";
 import { validateRequest } from "../validation";
 
 /*
@@ -85,18 +85,6 @@ function add_user_warn(user_id: number, group_id: number, nr_warn: number)
         user_info.warns_count[group_id] = warns_count;
         fs.writeFileSync(user_file, JSON.stringify(user_info));
         return warns_count;
-}
-
-function construct_name(from: any) {
-        let name = `${from?.first_name}`;
-
-        if ("last_name" in from)
-                name += ` ${from.last_name}`;
-
-        if ("username" in from)
-                name += ` (@${from.username})`;
-
-        return name;
 }
 
 async function do_ban(ctx: any, user_id: number)

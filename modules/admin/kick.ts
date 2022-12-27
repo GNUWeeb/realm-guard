@@ -12,6 +12,11 @@ export async function extract_kick_query(ctx: any, text: string)
         /*
          * Currently, supported pattern is only:
          * /cmd 123456789
+         *
+         * TODO(Viro_SSFS): Implement ban reason here.
+         *
+         * TODO(Viro_SSFS): Ban by username is possible with storage.
+         *                  This bot must have a memory!
          */
         if (args.length != 2)
                 return false;
