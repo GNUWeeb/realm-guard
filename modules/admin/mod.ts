@@ -1,6 +1,7 @@
 import { banCommand, unbanCommand } from "./ban";
 import { muteCommand, unmuteCommand, timedMuteCommand } from "./mute";
 import { kickCommand } from "./kick";
+import { pinCommand, unpinCommand } from "./pin";
 import { warnCommand, unwarnCommand, warnsCommand } from "./warn";
 import {
     setWelcomeCommand,
@@ -32,6 +33,8 @@ export const adminCommands = [
     unwarnCommand,
     warnsCommand,
     purgeCommand,
+    pinCommand,
+    unpinCommand,
 ];
 
 export { dropWelcomeAndFarewell };
