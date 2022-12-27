@@ -32,12 +32,26 @@ export type GreetItem = {
     farewell: string;
 };
 
+/*
+ * TODO(irvanmalik4):
+ *
+ *   This one somehow breaks my new implementation of
+ *   rules ordering. Please fix. I don't know TS much.
+ *
+ *   I use array of strings for now.
+ *
+ *   See modules/validation.ts.
+ *
+ *  -- Viro
+ */
 export type ValidateOptions =
-    | "reply"
+    | "user_is_admin"
+    | "bot_is_admin"
+    | "noreply_admin"
     | "query"
-    | "supergroup"
-    | "admin"
-    | "noreply_admin";
+    | "replied_user_in_group"
+    | "reply"
+    | "in_supergroup";
 
 export type UserInfo = {
     firstName: string;
