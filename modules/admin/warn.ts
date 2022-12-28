@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { ValidateOptions } from "../../types/type";
 import { replyToMsgId, getStorageDir, construct_name } from "../generic";
 import { validateRequest } from "../validation";
 
@@ -113,7 +114,7 @@ async function warn_command(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
         const update = ctx.update;
         const msg_id = update.message.message_id;
         const reply_to = update.message.reply_to_message;
@@ -150,7 +151,7 @@ async function unwarn_command(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
         const update = ctx.update;
         const msg_id = update.message.message_id;
         const reply_to = update.message.reply_to_message;

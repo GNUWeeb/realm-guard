@@ -1,4 +1,4 @@
-import { banCommand, unbanCommand, tbanCommand } from "./ban";
+import { banCommand, unbanCommand, tbanCommand, sbanCommand } from "./ban";
 import { muteCommand, unmuteCommand, timedMuteCommand } from "./mute";
 import { kickCommand } from "./kick";
 import { pinCommand, unpinCommand } from "./pin";
@@ -37,6 +37,7 @@ export const adminCommands = [
         pinCommand,
         unpinCommand,
         tbanCommand,
+        sbanCommand,
         reportCommand,
 ];
 

@@ -1,3 +1,4 @@
+import { ValidateOptions } from "../../types/type";
 import { validateRequest } from "../validation";
 
 async function pin_command(ctx: any)
@@ -7,7 +8,7 @@ async function pin_command(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "reply",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
@@ -23,7 +24,7 @@ async function unpin_command(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "reply",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;

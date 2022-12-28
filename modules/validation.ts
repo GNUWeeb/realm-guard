@@ -153,7 +153,7 @@ export async function validateRequest(
             update_id: number;
         }
     >,
-    rules: string[]
+    rules: ValidateOptions[]
 ): Promise<boolean> {
 
         /*

@@ -1,4 +1,4 @@
-import { Command } from "../../types/type";
+import { Command, ValidateOptions } from "../../types/type";
 import { validateRequest } from "../validation";
 
 async function purge_cmd(ctx: any)
@@ -7,7 +7,7 @@ async function purge_cmd(ctx: any)
                 "in_supergroup",
                 "user_is_admin",
                 "bot_is_admin"
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;

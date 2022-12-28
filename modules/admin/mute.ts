@@ -1,4 +1,4 @@
-import { Command } from "../../types/type";
+import { Command, ValidateOptions } from "../../types/type";
 import { timeToSecond } from "../generic";
 import { validateRequest } from "../validation";
 import { extract_kick_query } from "./kick";
@@ -107,7 +107,7 @@ async function mute_cmd(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
@@ -133,7 +133,7 @@ async function unmute_cmd(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
@@ -168,7 +168,7 @@ async function tmute_cmd(ctx: any)
                 "user_is_admin",
                 "bot_is_admin",
                 "noreply_admin",
-        ];
+        ] satisfies ValidateOptions[];
 
         if (!(await validateRequest(ctx, rules)))
                 return;
