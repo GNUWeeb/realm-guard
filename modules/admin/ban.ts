@@ -406,3 +406,240 @@ export const sbanCommand: Command = {
         command: "sban",
         function: sban_cmd
 };
+
+/*
+ * Quick dirty unit tests. Just to make sure my parsers
+ * are correct :)
+ *
+ * For testing only.
+ */
+function assert(cond: boolean)
+{
+        if (!cond)
+                throw Error("Assertion failed!");
+}
+
+async function test_parse_tban_cmd(ctx: any)
+{
+        let ret;
+
+        /*
+         * `/tban` without arguments is always invalid.
+         */
+        ctx.message.text = "/tban";
+        ctx.message.reply_to_message = {};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+        ctx.message.text = "/tban";
+        ctx.message.reply_to_message = {from: "user_obj_123"};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/tban [time]` without a replied message is
+         * invalid.
+         */
+        ctx.message.text = "/tban 1d";
+        ctx.message.reply_to_message = {};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/tban [time] [reason]` without a replied message is
+         * invalid.
+         */
+        ctx.message.text = "/tban 1d spam";
+        ctx.message.reply_to_message = {};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/tban [time] [reason]` (multiple words) without a
+         * replied message is invalid.
+         */
+        ctx.message.text = "/tban 1d bitcoin crypto spam";
+        ctx.message.reply_to_message = {};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/tban [not a time]` is always invalid.
+         */
+        ctx.message.text = "/tban aaaaa";
+        ctx.message.reply_to_message = {};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+        ctx.message.text = "/tban aaaaa";
+        ctx.message.reply_to_message = {from: "user_obj_123"};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/tban [user_id] [not a time]` without a replied message
+         * is invalid. If it had a replied message, it will fallback
+         * to `/tban [time] [reason]` because `[user_id]` is a valid
+         * time pattern.
+         */
+        ctx.message.text = "/tban 123123 aaaaa";
+        ctx.message.reply_to_message = {};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err !== null);
+
+        ctx.message.text = "/tban 123123 aaaaa";
+        ctx.message.reply_to_message = {from: "user_obj_321"};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err === null);
+        assert(ret.user === "user_obj_321");
+        assert(ret.seconds === 123123);
+        assert(ret.reason === "aaaaa");
+
+
+        /*
+         * `/tban [user_id] [time]`, the replied message is ignored.
+         */
+        ctx.message.text = "/tban 123123 1h";
+        ctx.message.reply_to_message = {from: "user_obj_123123"};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err === null);
+        assert(ret.user === "user_obj_123123");
+        assert(ret.seconds === 3600);
+        assert(ret.reason === "");
+
+
+        /*
+         * `/tban [user_id] [time] [reason]`, the replied message is ignored.
+         */
+        ctx.message.text = "/tban 123123 1h spam";
+        ctx.message.reply_to_message = {from: "user_obj_123123"};
+        ret = await parse_tban_cmd(ctx);
+        assert(ret.err === null);
+        assert(ret.user === "user_obj_123123");
+        assert(ret.seconds === 3600);
+        assert(ret.reason === "spam");
+}
+
+async function test_parse_ban_cmd(ctx: any)
+{
+        let ret;
+
+        /*
+         * `/ban` without a replied message is invalid.
+         */
+        ctx.message.text = "/ban";
+        ctx.message.reply_to_message = {};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/ban [reason]` without a replied message is invalid.
+         */
+        ctx.message.text = "/ban spam";
+        ctx.message.reply_to_message = {};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/ban [reason]` (multiple words) without a replied
+         * message is invalid.
+         */
+        ctx.message.text = "/ban crypto spam";
+        ctx.message.reply_to_message = {};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err !== null);
+
+
+        /*
+         * `/ban` with a replied message is OK.
+         */
+        ctx.message.text = "/ban";
+        ctx.message.reply_to_message = {from: "user_obj_111"};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err === null);
+        assert(ret.user === "user_obj_111");
+        assert(ret.reason === "");
+
+
+        /*
+         * `/ban [reason]` with a replied message is OK.
+         */
+        ctx.message.text = "/ban spam";
+        ctx.message.reply_to_message = {from: "user_obj_111"};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err === null);
+        assert(ret.user === "user_obj_111");
+        assert(ret.reason === "spam");
+
+
+        /*
+         * `/ban [reason]` (multiple words) with a replied message
+         * is OK.
+         */
+        ctx.message.text = "/ban bitcoin crypto spam";
+        ctx.message.reply_to_message = {from: "user_obj_222"};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err === null);
+        assert(ret.user === "user_obj_222");
+        assert(ret.reason === "bitcoin crypto spam");
+
+
+        /*
+         * `/ban [user_id] [reason]` must ignore the replied
+         * message.
+         */
+        ctx.message.text = "/ban 999 spam";
+        ctx.message.reply_to_message = {from: "user_obj_333"};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err === null);
+        /* 999 not 333 */
+        assert(ret.user === "user_obj_999");
+        assert(ret.reason === "spam");
+
+
+        /*
+         * `/ban [user_id] [reason]` (multiple words) must ignore
+         * the replied message.
+         */
+        ctx.message.text = "/ban 999 bitcoin crypto spam";
+        ctx.message.reply_to_message = {from: "user_obj_333"};
+        ret = await parse_ban_cmd(ctx);
+        assert(ret.err === null);
+        /* 999 not 333 */
+        assert(ret.user === "user_obj_999");
+        assert(ret.reason === "bitcoin crypto spam");
+}
+
+export async function TestBanModuleParsers()
+{
+        let ctx = {
+                message: {
+                        text: "",
+                        reply_to_message: {}
+                },
+                getChatMember: async function (x: any) {
+                        return `user_obj_${x}`;
+                }
+        };
+
+        let tests = [];
+        let ret;
+        let i;
+
+        console.log("[TEST] Testing TestBanModuleParsers...");
+
+        tests.push(test_parse_ban_cmd(ctx));
+        tests.push(test_parse_tban_cmd(ctx));
+
+        for (i in tests)
+                await tests[i];
+
+        console.log("[TEST] TestBanModuleParsers is OK!");
+}
