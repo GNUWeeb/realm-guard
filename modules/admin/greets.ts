@@ -11,18 +11,20 @@ const rules = [
         "query",
 ] satisfies ValidateOptions[];
 
+const storage_dir = getStorageDir();
+
 export const setWelcomeCommand: Command = {
     command: "setwelcome",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
@@ -35,7 +37,7 @@ export const setWelcomeCommand: Command = {
             const welcomeMessage = args.slice(1).join(" ");
             const greets: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/${ctx.chat.id}.json`,
+                    storage_dir + `groups/${ctx.chat.id}.json`,
                     "utf-8"
                 )
             );
@@ -48,7 +50,7 @@ export const setWelcomeCommand: Command = {
 
             // write the JSON file
             await fs.writeFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 JSON.stringify(greetsProcess, null, 2)
             );
             console.log("[INFO] Welcome message set!");
@@ -63,25 +65,25 @@ export const getWelcomeCommand: Command = {
     command: "getwelcome",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
         const greets: GreetItem = JSON.parse(
             await fs.readFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 "utf-8"
             )
         );
         const greetsDefault: GreetItem = JSON.parse(
-            await fs.readFile(getStorageDir() + `groups/default.json`, "utf-8")
+            await fs.readFile(storage_dir + `groups/default.json`, "utf-8")
         );
         const welcomeMessage = greets;
         if (!welcomeMessage) {
@@ -104,14 +106,14 @@ export const setFarewellCommand: Command = {
     command: "setfarewell",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
@@ -123,13 +125,13 @@ export const setFarewellCommand: Command = {
             const farewellMessage = args.slice(1).join(" ");
             const greets: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/${ctx.chat.id}.json`,
+                    storage_dir + `groups/${ctx.chat.id}.json`,
                     "utf-8"
                 )
             );
             const greetsDefault: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/default.json`,
+                    storage_dir + `groups/default.json`,
                     "utf-8"
                 )
             );
@@ -142,7 +144,7 @@ export const setFarewellCommand: Command = {
 
             // write the JSON file
             await fs.writeFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 JSON.stringify(greetsProcess, null, 2)
             );
             console.log(`[INFO] Farewell message set for chat ${ctx.chat.id}`);
@@ -157,25 +159,25 @@ export const getFarewellCommand: Command = {
     command: "getfarewell",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
         const greets: GreetItem = JSON.parse(
             await fs.readFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 "utf-8"
             )
         );
         const greetsDefault: GreetItem = JSON.parse(
-            await fs.readFile(getStorageDir() + `groups/default.json`, "utf-8")
+            await fs.readFile(storage_dir + `groups/default.json`, "utf-8")
         );
         const farewellMessage = greets;
         if (!farewellMessage) {
@@ -198,14 +200,14 @@ export const resetWelcomeCommand: Command = {
     command: "resetwelcome",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
@@ -215,13 +217,13 @@ export const resetWelcomeCommand: Command = {
         else {
             const greets: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/${ctx.chat.id}.json`,
+                    storage_dir + `groups/${ctx.chat.id}.json`,
                     "utf-8"
                 )
             );
             const greetsDefault: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/default.json`,
+                    storage_dir + `groups/default.json`,
                     "utf-8"
                 )
             );
@@ -234,7 +236,7 @@ export const resetWelcomeCommand: Command = {
 
             // write the JSON file
             await fs.writeFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 JSON.stringify(greetsProcess, null, 2)
             );
             console.log(`[INFO] Welcome message reset for chat ${ctx.chat.id}`);
@@ -247,14 +249,14 @@ export const resetFarewellCommand: Command = {
     command: "resetfarewell",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
@@ -264,13 +266,13 @@ export const resetFarewellCommand: Command = {
         else {
             const greets: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/${ctx.chat.id}.json`,
+                    storage_dir + `groups/${ctx.chat.id}.json`,
                     "utf-8"
                 )
             );
             const greetsDefault: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/default.json`,
+                    storage_dir + `groups/default.json`,
                     "utf-8"
                 )
             );
@@ -283,7 +285,7 @@ export const resetFarewellCommand: Command = {
 
             // write the JSON file
             await fs.writeFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 JSON.stringify(greetsProcess, null, 2)
             );
             console.log(
@@ -298,14 +300,14 @@ export const resetGreetsCommand: Command = {
     command: "resetgreets",
     function: async (ctx) => {
         if (
-            !fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)
+            !fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)
         ) {
-            await fs.mkdir(getStorageDir() + `groups/`, {
+            await fs.mkdir(storage_dir + `groups/`, {
                 recursive: true,
             });
             await fs.copyFile(
-                getStorageDir() + `groups/default.json`,
-                getStorageDir() + `groups/${ctx.chat.id}.json`
+                storage_dir + `groups/default.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`
             );
         }
 
@@ -316,7 +318,7 @@ export const resetGreetsCommand: Command = {
         else {
             const greetsDefault: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/default.json`,
+                    storage_dir + `groups/default.json`,
                     "utf-8"
                 )
             );
@@ -329,7 +331,7 @@ export const resetGreetsCommand: Command = {
 
             // write the JSON file
             await fs.writeFile(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 JSON.stringify(greetsProcess, null, 2)
             );
             console.log(
@@ -341,16 +343,16 @@ export const resetGreetsCommand: Command = {
 };
 
 export const dropWelcomeAndFarewell = (ctx: Context<any>) => {
-    if (!fsSync.existsSync(getStorageDir() + `groups/${ctx.chat.id}.json`)) {
+    if (!fsSync.existsSync(storage_dir + `groups/${ctx.chat.id}.json`)) {
         fsSync.copyFileSync(
-            getStorageDir() + `groups/default.json`,
-            getStorageDir() + `groups/${ctx.chat.id}.json`,
+            storage_dir + `groups/default.json`,
+            storage_dir + `groups/${ctx.chat.id}.json`,
             fsSync.constants.COPYFILE_EXCL
         );
     }
 
     if (fsSync.existsSync(
-        getStorageDir() + `ban_silent/${ctx.chat.id}.temp`,
+        storage_dir + `ban_silent/${ctx.chat.id}.temp`,
     )) return false;
 
     if (ctx.message?.new_chat_members) {
@@ -358,7 +360,7 @@ export const dropWelcomeAndFarewell = (ctx: Context<any>) => {
             if (user.is_bot) return false;
             const greets: GreetItem = JSON.parse(
                 await fs.readFile(
-                    getStorageDir() + `groups/${ctx.chat.id}.json`,
+                    storage_dir + `groups/${ctx.chat.id}.json`,
                     "utf-8"
                 )
             );
@@ -379,7 +381,7 @@ export const dropWelcomeAndFarewell = (ctx: Context<any>) => {
         if (user.is_bot) return false;
         const greets: GreetItem = JSON.parse(
             fsSync.readFileSync(
-                getStorageDir() + `groups/${ctx.chat.id}.json`,
+                storage_dir + `groups/${ctx.chat.id}.json`,
                 "utf-8"
             )
         );
