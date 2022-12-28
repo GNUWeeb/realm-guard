@@ -1,7 +1,7 @@
 import { Command, ContextDefault, UserInfo } from "../types/type";
 import * as fs from "fs";
 
-const startString = `<b>Realm Guard's here at your service!</b>
+const startString = `<b>${process.env.BOT_NAME}'s here at your service!</b>
 
 <i>Please note that this bot is still in development, and may not work as expected.</i>
 Use /help to see a list of commands.
@@ -9,20 +9,20 @@ Use /help to see a list of commands.
 If you have any questions, please contact @lappretard.
 `;
 
-const helpString = `<b>Realm Guard Help</b>
-  /start - Start Realm Guard
+const helpString = `<b>${process.env.BOT_NAME} Help</b>
+  /start - Start ${process.env.BOT_NAME}
   /help - Show this help message
-  /ping - Check if Realm Guard is online
-  /version - Show Realm Guard's version
+  /ping - Check if ${process.env.BOT_NAME} is online
+  /version - Show ${process.env.BOT_NAME}'s version
 
-<b>Realm Guard Admin Commands</b>
-  /ban <id|reply> - Ban a user from the group
-  /sban <id|reply> - Ban a user from the group silently
-  /tban <id|reply> <time> - Temporarily ban a user from the group
+<b>${process.env.BOT_NAME} Admin Commands</b>
+  /ban [id|reply] - Ban a user from the group
+  /sban [id|reply] - Ban a user from the group silently
+  /tban [id|reply] [time] - Temporarily ban a user from the group
   /unban - Unban a user from the group
   /kick - Kick a user from the group
-  /mute <id|reply> - Mute a user in the group
-  /tmute <id|reply> <time> - Temporarily mute a user in the group
+  /mute [id|reply] - Mute a user in the group
+  /tmute [id|reply] [time] - Temporarily mute a user in the group
   /unmute - Unmute a user in the group
   /warn - Warn a user in the group
   /unwarn - Unwarn a user in the group
@@ -37,7 +37,7 @@ const helpString = `<b>Realm Guard Help</b>
   /pin - Pin a message in the group
   /unpin - Unpin a message in the group
 
-<b>Realm Guard User Commands</b>
+<b>${process.env.BOT_NAME} User Commands</b>
   /warns - Show your warns in the group
   /report - Report a user in the group
   /donate - Donate to help support development`;

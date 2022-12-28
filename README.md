@@ -57,8 +57,9 @@ Currently at a WIP stage and is not fit for production use.
 1. Install the dependencies using `pnpm install` or `npm install` or whichever node package manager you prefer.
 2. Copy the example `.env.example` environment table file and rename it to `.env`.
 3. Copy your bot token into the environment variable `BOT_TOKEN` as its value.
-4. Run `npm run dev` or `pnpm run dev` or `yarn run dev` or whichever node package manager you prefer as long as it runs.
-5. Voila!
+4. Change the remaining environment variables accordingly. (`BOT_NAME` and `STORAGE_DIR` if you use it)
+5. Run `npm run dev` or `pnpm run dev` or `yarn run dev` or whichever node package manager you prefer as long as it runs.
+6. Voila!
 
 ## License
 
