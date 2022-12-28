@@ -13,6 +13,8 @@ import { existsSync } from "fs";
  *
  */
 
+const storage_dir = getStorageDir();
+
 async function do_ban(ctx: any, user: any, seconds: number = -1,
                       revoke_msg: boolean = false, silent: boolean = false)
 {
@@ -29,11 +31,11 @@ async function do_ban(ctx: any, user: any, seconds: number = -1,
 
         if (silent) {
                 // create a directory if it doesn't exist
-                if (!existsSync(`${getStorageDir()}ban_silent`))
-                        await mkdir(`${getStorageDir()}ban_silent`);
+                if (!existsSync(`${storage_dir}ban_silent`))
+                        await mkdir(`${storage_dir}ban_silent`);
                 // create a file with 0 bytes in it
                 await writeFile(
-                        `${getStorageDir()}ban_silent/${ctx.chat.id}.temp`,
+                        `${storage_dir}ban_silent/${ctx.chat.id}.temp`,
                         "",
                 );
         }
@@ -48,7 +50,7 @@ async function do_ban(ctx: any, user: any, seconds: number = -1,
 
         if (silent) {
                 const time = setTimeout(async () => {
-                        await rm(`${getStorageDir()}ban_silent/${ctx.chat.id}.temp`);
+                        await rm(`${storage_dir}ban_silent/${ctx.chat.id}.temp`);
                         clearTimeout(time);
                 }, 4 * 1000);
                 return;
