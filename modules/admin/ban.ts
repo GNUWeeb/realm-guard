@@ -30,11 +30,11 @@ async function do_ban(ctx: any, user: any, seconds: number = -1,
         if (silent) {
                 // create a directory if it doesn't exist
                 if (!existsSync(`${getStorageDir()}ban_silent`))
-                    await mkdir(`${getStorageDir()}ban_silent`);
+                        await mkdir(`${getStorageDir()}ban_silent`);
                 // create a file with 0 bytes in it
                 await writeFile(
-                    `${getStorageDir()}ban_silent/${ctx.chat.id}.temp`,
-                    "",
+                        `${getStorageDir()}ban_silent/${ctx.chat.id}.temp`,
+                        "",
                 );
         }
 
@@ -48,15 +48,15 @@ async function do_ban(ctx: any, user: any, seconds: number = -1,
 
         if (silent) {
                 const time = setTimeout(async () => {
-                    await rm(`${getStorageDir()}ban_silent/${ctx.chat.id}.temp`);
-                    clearTimeout(time);
+                        await rm(`${getStorageDir()}ban_silent/${ctx.chat.id}.temp`);
+                        clearTimeout(time);
                 }, 4 * 1000);
                 return;
         }
 
         let r;
         if ("time_tban_arg" in ctx)
-                r = `User ${user.first_name} (${user.id}) is temporarily banned for ${ctx.time_tban_arg}!`
+                r = `User ${user.first_name} (${user.id}) is temporarily banned for ${ctx.time_tban_arg}!`;
         else
                 r = `User ${user.first_name} (${user.id}) has been banned!`;
 
