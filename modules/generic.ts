@@ -42,7 +42,7 @@ const helpString = `<b>Realm Guard Help</b>
   /report - Report a user in the group
   /donate - Donate to help support development`;
 
-const versionString = `<b>Realm Guard</b> v0.0.1-alpha
+const versionString = `<b>Realm Guard</b> v0.0.2-alpha
 Node Version: ${process.version}
 Telegraf Version: 4.11.2`;
 
