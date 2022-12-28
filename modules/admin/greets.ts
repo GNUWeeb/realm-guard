@@ -349,6 +349,10 @@ export const dropWelcomeAndFarewell = (ctx: Context<any>) => {
         );
     }
 
+    if (fsSync.existsSync(
+        getStorageDir() + `ban_silent/${ctx.chat.id}.temp`,
+    )) return false;
+
     if (ctx.message?.new_chat_members) {
         ctx.message.new_chat_members.forEach(async (user: User) => {
             if (user.is_bot) return false;
