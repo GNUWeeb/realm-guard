@@ -99,8 +99,8 @@ async function do_ban(ctx: any, user: any, seconds: number = 0,
         }
 
         let r = `User ${user.first_name} (${user.id}) `;
-        if (ctx?.tban_time_arg)
-                r += `is temporarily banned for ${ctx.tban_time_arg}!`;
+        if (ctx?.time_arg)
+                r += `is temporarily banned for ${ctx.time_arg}!`;
         else
                 r += `has been banned!`;
 
@@ -172,9 +172,9 @@ async function __parse_ban_cmd(ctx: any, args: string[])
 
 /*
  * This is used by `/ban` and `/sban`. They both have
- * the same arguments spec.
+ * the same arguments spec. Export this for mute.ts.
  */
-async function parse_ban_cmd(ctx: any)
+export async function parse_ban_cmd(ctx: any)
 {
         let args = ctx.message.text.split(" ");
         let reason = "";
@@ -250,7 +250,7 @@ async function __parse_tban_cmd(ctx: any, args: string[])
                 } else {
                         seconds = timeToSecond(args[1]);
                         reason = reason = args.slice(2).join(" ");
-                        ctx.tban_time_arg = args[1];
+                        ctx.time_arg = args[1];
                 }
 
                 return [user, reason, seconds, err];
@@ -270,7 +270,7 @@ async function __parse_tban_cmd(ctx: any, args: string[])
                 err = error_on_user_admin(user);
                 reason = args.slice(3).join(" ");
                 seconds = timeToSecond(args[2]);
-                ctx.tban_time_arg = args[2];
+                ctx.time_arg = args[2];
 
                 if (user?.user)
                         user = user.user;
@@ -282,7 +282,10 @@ async function __parse_tban_cmd(ctx: any, args: string[])
         return [user, reason, seconds, err];
 }
 
-async function parse_tban_cmd(ctx: any)
+/*
+ * Export this for mute.ts
+ */
+export async function parse_tban_cmd(ctx: any)
 {
         let args = ctx.message.text.split(" ");
         let seconds = 0;
