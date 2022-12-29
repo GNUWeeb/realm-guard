@@ -1,0 +1,44 @@
+name: Tests
+
+on:
+  # Trigger the workflow on push or pull requests.
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+
+
+    - name: Install NodeJS
+      run: |
+        sudo apt-get install -y nodejs;
+
+
+    - name: Display NodeJS and NPM versions
+      run: |
+        npm --version;
+        node --version;
+
+
+    - name: Install dependencies
+      run: |
+        npm install --verbose;
+
+
+    - name: Compile Typescript to Javascript
+      run: |
+        npm run build;
+
+
+    - name: Run unit tests
+      run: |
+        node dist/github.js;
