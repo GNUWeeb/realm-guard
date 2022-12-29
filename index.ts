@@ -2,18 +2,24 @@ import { bot } from "./config";
 import { commands } from "./modules/mod";
 import { dropWelcomeAndFarewell } from "./modules/admin/mod";
 import { createDefaults } from "./defaults";
+import { runTests } from "./tests"
 
-createDefaults();
+async function main()
+{
+        await runTests();
+        await createDefaults();
 
-commands.forEach((command) => {
-        bot.command(command.command!, command.function);
-});
+        commands.forEach((command) => {
+                bot.command(command.command!, command.function);
+        });
 
-bot.drop(dropWelcomeAndFarewell);
+        bot.drop(dropWelcomeAndFarewell);
 
-bot.launch();
+        bot.launch();
 
-console.log("[STARTED] Realm Guard is now online!");
+        console.log("[STARTED] Realm Guard is now online!");
+        process.once("SIGINT", () => bot.stop("SIGINT"));
+        process.once("SIGTERM", () => bot.stop("SIGTERM"));
+}
 
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+main();
