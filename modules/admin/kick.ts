@@ -1,5 +1,21 @@
 import { Command, ValidateOptions } from "../../types/type";
+import { parse_ban_cmd } from "./ban";
 import { validateRequest } from "../validation";
+
+const SIDE_NOTE = `<b>Side note:</b>
+Currently, the <code>[reason]</code> doesn't mean anything, but accepted.`;
+
+const KICK_ARG_SPEC = `
+<code>/kick</code> command arguments spec:
+
+  <code>/kick</code>   (must reply)
+  <code>/kick [reason]</code>   (must reply, *)
+  <code>/kick [user_id]</code>
+  <code>/kick [user_id] [reason]</code>
+
+*: The first word of the <code>[reason]</code> sentence must be NaN. If it is a number, it will fallback to <code>[user_id]</code> variants.
+
+${SIDE_NOTE}`;
 
 /*
  * Export this for ban.ts.
@@ -40,23 +56,7 @@ async function do_kick(ctx: any, user: any)
 {
         await ctx.unbanChatMember(user.id);
         console.log(`[KICK] ${user.first_name} (${user.id})`);
-        await ctx.reply(`User ${user.first_name} (${user.id}) kicked!`);
-}
-
-async function kick_with_reply(ctx: any)
-{
-        await do_kick(ctx, ctx.message.reply_to_message.from);
-}
-
-async function kick_with_query(ctx: any)
-{
-        const user = extract_kick_query(ctx, ctx.message.text);
-
-        if (!user)
-                return false;
-
-        await do_kick(ctx, user);
-        return true;
+        await ctx.reply(`User ${user.first_name} (${user.id}) has been kicked!`);
 }
 
 async function kick_cmd(ctx: any)
@@ -71,18 +71,20 @@ async function kick_cmd(ctx: any)
         if (!(await validateRequest(ctx, rules)))
                 return;
 
-        if (ctx.message?.text) {
-                if (await kick_with_query(ctx))
-                        return;
-        }
-
-        if (ctx.message?.reply_to_message?.from) {
-                await kick_with_reply(ctx);
+        /*
+         * The `/kick` command has the same arguments spec
+         * with the `/ban` command.
+         */
+        const ret = await parse_ban_cmd(ctx);
+        if (ret.err) {
+                await ctx.replyWithHTML(ret.err + `\n${KICK_ARG_SPEC}`);
                 return;
         }
 
-        console.log("[ERROR] No valid reply or user ID!");
-        await ctx.reply("Please reply to a message or type the user ID to kick a user!");
+        /*
+         * TODO(???): What should we do with @ret.reason?
+         */
+        await do_kick(ctx, ret.user);
 }
 
 export const kickCommand: Command = {
