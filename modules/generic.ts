@@ -196,7 +196,8 @@ export function getStorageDir()
         return ret;
 }
 
-export function construct_name(from: any) {
+export function construct_name(from: any)
+{
         let name = `${from?.first_name}`;
 
         if ("last_name" in from)
