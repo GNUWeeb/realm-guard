@@ -47,7 +47,7 @@ Node Version: ${process.version}
 Telegraf Version: 4.11.2`;
 
 const userString = `<b>User Info</b>
-<b>First Name:</b> {{first_name}} {{last_name}}
+<b>First Name:</b> {{first_name}}{{last_name}}
 <b>Username:</b> {{username}}
 <b>ID:</b> {{id}}
 <b>Is Bot:</b> {{is_bot}}
@@ -91,7 +91,7 @@ export const helpCommand: Command = {
 
 async function printChatString(ctx: ContextDefault, vars: UserInfo)
 {
-        if (vars.lastName)
+        if (vars?.lastName)
                 vars.lastName = `\n<b>Last Name:</b> ${vars.lastName}`;
 
         if (vars.isAdmin === "administrator" || vars.isAdmin === "creator") {
@@ -102,7 +102,7 @@ async function printChatString(ctx: ContextDefault, vars: UserInfo)
 
         const text = userString
                 .replace("{{first_name}}", vars.firstName)
-                .replace("{{last_name}}", vars.lastName)
+                .replace("{{last_name}}", vars.lastName || "")
                 .replace("{{username}}", vars.username)
                 .replace("{{id}}", String(vars.id))
                 .replace("{{is_bot}}", vars.isBot ? "Yes" : "No")
